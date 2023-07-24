@@ -5,3 +5,20 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+if Rails.env.development?
+  Organization.destroy_all
+  User.destroy_all
+  
+  3.times do
+    company = Organization.create!(name: Faker::Company.name)
+
+    company.users.create!(
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      email: Faker::Internet.email,
+      password: "password",
+      password_confirmation: "password"
+    )
+  end
+end
