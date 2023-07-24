@@ -15,6 +15,10 @@ if Rails.env.development?
     organization = Organization.create!(name: Faker::Company.name)
     p "Organization #{organization.name} created!"
 
+    account = organization.create_account!(
+      stripe_customer_id: "cus_#{Faker::Alphanumeric.unique.alphanumeric(number: 12)}"
+    )
+
     # users
     organization.users.create!(
       first_name: Faker::Name.first_name,

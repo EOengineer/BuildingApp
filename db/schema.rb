@@ -16,9 +16,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_24_211739) do
 
   create_table "accounts", force: :cascade do |t|
     t.bigint "organization_id", null: false
+    t.string "stripe_customer_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_accounts_on_organization_id"
+    t.index ["stripe_customer_id"], name: "index_accounts_on_stripe_customer_id", unique: true
   end
 
   create_table "organizations", force: :cascade do |t|
