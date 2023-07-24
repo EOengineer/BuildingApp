@@ -9,16 +9,20 @@
 if Rails.env.development?
   Organization.destroy_all
   User.destroy_all
-  
-  3.times do
-    company = Organization.create!(name: Faker::Company.name)
 
-    company.users.create!(
+  3.times do
+    # organization
+    organization = Organization.create!(name: Faker::Company.name)
+    p "Organization #{organization.name} created!"
+
+    # users
+    organization.users.create!(
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       email: Faker::Internet.email,
       password: "password",
       password_confirmation: "password"
     )
+    p "User #{organization.users.first.first_name} #{organization.users.first.last_name} created!"
   end
 end
