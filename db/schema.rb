@@ -10,9 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_20_153941) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_25_010427) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "subscription_status", ["active", "canceled", "past_due", "pending", "trialing"]
+
+  create_table "accounts", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.string "stripe_customer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_accounts_on_organization_id"
+    t.index ["stripe_customer_id"], name: "index_accounts_on_stripe_customer_id", unique: true
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_organizations_on_name", unique: true
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "stripe_subscription_id"
+    t.enum "status", default: "pending", null: false, enum_type: "subscription_status"
+    t.datetime "current_period_start_at"
+    t.datetime "current_period_end_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "stripe_subscription_id"], name: "index_subscriptions_on_account_id_and_stripe_subscription_id", unique: true
+    t.index ["account_id"], name: "index_subscriptions_on_account_id"
+    t.index ["status"], name: "index_subscriptions_on_status"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "encrypted_password", default: "", null: false
@@ -36,11 +69,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_20_153941) do
     t.string "email", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "organization_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["email"], name: "unique_emails", unique: true
+    t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "accounts", "organizations"
+  add_foreign_key "subscriptions", "accounts"
+  add_foreign_key "users", "organizations"
 end
