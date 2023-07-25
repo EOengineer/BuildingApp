@@ -34,6 +34,9 @@
   <div class="mb-3">
     <%= f.submit "Sign up", class: "btn btn-primary" %>
   </div>
+
+  <!-- # TODO: org should come from invitation -->
+  <%= f.hidden_field "organization_id", value: Organization.first.id  %>
 <% end %>
 
 <%= render "devise/shared/links" %>
