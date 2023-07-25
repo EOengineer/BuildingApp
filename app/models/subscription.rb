@@ -12,5 +12,18 @@ class Subscription < ApplicationRecord
   validates :status, presence: true, inclusion: { in: statuses.values }
   validates :current_period_start_at, presence: true
   validates :current_period_end_at, presence: true
-  validates :stripe_subscription_id, presence: true
+  validates :stripe_subscription_id, presence: true, uniqueness: { scope: :account_id }
+
+  ACCESS_GRANTING_STATUSES = [ 
+    statuses[:active], 
+    statuses[:past_due],
+    statuses[:trialing]
+  ]
+
+  scope :active_or_trialing, -> { where(status: ACCESS_GRANTING_STATUSES) }
+  scope :recent, -> { order("current_period_end DESC NULLS LAST") }
+
+  def active_or_trialing?
+    ACCESS_GRANTING_STATUSES.include?(status)
+  end
 end

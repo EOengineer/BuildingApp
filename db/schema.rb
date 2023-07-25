@@ -44,6 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_25_010427) do
     t.datetime "updated_at", null: false
     t.index ["account_id", "stripe_subscription_id"], name: "index_subscriptions_on_account_id_and_stripe_subscription_id", unique: true
     t.index ["account_id"], name: "index_subscriptions_on_account_id"
+    t.index ["status"], name: "index_subscriptions_on_status"
   end
 
   create_table "users", force: :cascade do |t|
