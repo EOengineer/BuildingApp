@@ -10,9 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_24_211739) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_25_010427) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "subscription_status", ["active", "canceled", "past_due", "pending", "trialing"]
 
   create_table "accounts", force: :cascade do |t|
     t.bigint "organization_id", null: false
@@ -28,6 +32,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_24_211739) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_organizations_on_name", unique: true
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "stripe_subscription_id"
+    t.enum "status", default: "pending", null: false, enum_type: "subscription_status"
+    t.datetime "current_period_start_at"
+    t.datetime "current_period_end_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "stripe_subscription_id"], name: "index_subscriptions_on_account_id_and_stripe_subscription_id", unique: true
+    t.index ["account_id"], name: "index_subscriptions_on_account_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -62,5 +78,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_24_211739) do
   end
 
   add_foreign_key "accounts", "organizations"
+  add_foreign_key "subscriptions", "accounts"
   add_foreign_key "users", "organizations"
 end

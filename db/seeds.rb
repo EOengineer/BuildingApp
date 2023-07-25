@@ -9,6 +9,8 @@
 if Rails.env.development?
   Organization.destroy_all
   User.destroy_all
+  Account.destroy_all
+  Subscription.destroy_all
 
   3.times do
     # organization
@@ -18,6 +20,15 @@ if Rails.env.development?
     account = organization.create_account!(
       stripe_customer_id: "cus_#{Faker::Alphanumeric.unique.alphanumeric(number: 12)}"
     )
+
+    # subscriptions
+    account.subscriptions.create!(
+      status: "active",
+      current_period_start_at: Time.now,
+      current_period_end_at: Time.now + 1.month,
+      stripe_subscription_id: "sub_#{Faker::Alphanumeric.unique.alphanumeric(number: 9)}"
+    )
+    p "Subscription #{account.subscriptions.first.stripe_subscription_id} created!"
 
     # users
     organization.users.create!(
