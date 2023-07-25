@@ -9,9 +9,9 @@ class Subscription < ApplicationRecord
     trialing: "trialing"
   }, _prefix: true
 
-  validates :status, presence: true, inclusion: { in: statuses.values }
   validates :current_period_start_at, presence: true
   validates :current_period_end_at, presence: true
+  validates :status, presence: true, inclusion: { in: statuses.values }
   validates :stripe_subscription_id, presence: true, uniqueness: { scope: :account_id }
 
   ACCESS_GRANTING_STATUSES = [ 
@@ -20,10 +20,10 @@ class Subscription < ApplicationRecord
     statuses[:trialing]
   ]
 
-  scope :active_or_trialing, -> { where(status: ACCESS_GRANTING_STATUSES) }
+  scope :access_granting, -> { where(status: ACCESS_GRANTING_STATUSES) }
   scope :recent, -> { order("current_period_end DESC NULLS LAST") }
 
-  def active_or_trialing?
+  def access_granting?
     ACCESS_GRANTING_STATUSES.include?(status)
   end
 end

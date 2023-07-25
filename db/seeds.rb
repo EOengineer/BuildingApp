@@ -7,19 +7,17 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 if Rails.env.development?
-  Organization.destroy_all
-  User.destroy_all
-  Account.destroy_all
-  Subscription.destroy_all
-
+  # Set up data for the development environment.
   3.times do
     # organization
     organization = Organization.create!(name: Faker::Company.name)
     p "Organization #{organization.name} created!"
 
+    # account
     account = organization.create_account!(
       stripe_customer_id: "cus_#{Faker::Alphanumeric.unique.alphanumeric(number: 12)}"
     )
+    p "Account #{account.stripe_customer_id} created!"
 
     # subscriptions
     account.subscriptions.create!(
