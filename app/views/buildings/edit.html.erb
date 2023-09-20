@@ -1,0 +1,8 @@
+<div>
+  <h1 class="font-bold text-2xl mb-3">Editing Building</h1>
+
+  <turbo-frame id="<%= dom_id @building %>">
+    <%= render "form", building: @building %>
+    <%= link_to "Never Mind", buildings_path, class: "btn btn-secondary mb-3" %>
+  </turbo-frame>
+</div>

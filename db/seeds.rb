@@ -38,4 +38,12 @@ if Rails.env.development?
     )
     p "User #{organization.users.first.first_name} #{organization.users.first.last_name} created!"
   end
+
+  5.times do
+    Building.create!(
+      title: "Building #{Faker::Placeholdit.name}",
+      description: Faker::Lorem.paragraph(sentence_count: 2),
+    )
+  end
+    p "Building #{Building.last.title} created!"
 end

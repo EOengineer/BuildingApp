@@ -1,0 +1,12 @@
+<turbo-frame id="<%= dom_id building %>" class="block">
+  <%= building.title %>
+
+  <%= link_to "Edit", edit_building_path(building),
+              class: "btn bg-gray-100"
+  %>
+  <div class="inline-block ml-2">
+    <%= button_to "Delete", building_path(building),
+                  method: :delete,
+                  class: "btn bg-red-100" %>
+  </div>
+</turbo-frame>

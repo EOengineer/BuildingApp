@@ -1,0 +1,44 @@
+<div class="container">
+
+  <% if notice.present? %>
+    <p class="py-2 px-3 bg-success mb-5 text-white font-medium rounded-lg inline-block" id="notice">
+      <%= notice %>
+    </p>
+  <% end %>
+
+  <h1 class="font-bold text-2xl">Building Manager</h1>
+
+  <div class="mt-4">
+    <%= render "form", building: @building %>
+  </div>
+
+  <h1 class="font-bold text-lg mb-7">Buildings</h1>
+
+  <div id="buildings" class="mt-4"></div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @buildings.each do |building| %>
+          <tr>
+            <th scope="row"><%= building.id %></th>
+            <td><%= building.title %></td>
+            <td><%= building.description %></td>
+            <td>
+              <%= link_to 'Show', building_path(building.id), class: "btn btn-primary" %>
+              <%= link_to 'Edit', edit_building_path(building.id), class: "btn btn-secondary" %>
+              <%= link_to 'Destroy', building_path(building.id), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
